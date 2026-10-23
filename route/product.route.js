@@ -12,8 +12,10 @@ const router = express.Router();
 const { upload } = require("../middlewares/upload.middleware");
 const { authanicate } = require("../middlewares/auth.middleware");
 const { authorize } = require("../middlewares/role.middleware");
+const { updateProductPrice } = require("../controller/product.controller");
 
 router.get("/", getProducts);
+router.patch("/:id/price", authanicate, authorize("admin"), updateProductPrice);
 router.get("/id/:id", getProductById);
 router.get("/related-products/:slug", getRelatedProducts);
 router.get("/:slug", getProductBySlug);

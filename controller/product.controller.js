@@ -575,3 +575,30 @@ exports.deleteProduct = catchAsync(async (req, res) => {
     data: myProduct,
   });
 }); 
+exports.updateProductPrice = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { price } = req.body;
+
+  if (!mongoose.isValidObjectId(id)) {
+    throw new AppError("Invalid product ID", 400);
+  }
+
+  if (price === undefined || Number(price) < 0) {
+    throw new AppError("Valid price is required", 400);
+  }
+
+  const myProduct = await Product.findByIdAndUpdate(
+    id,
+    { price: Number(price) },
+    { new: true, runValidators: true }
+  );
+
+  if (!myProduct) {
+    throw new AppError("Product not found", 404);
+  }
+
+  res.status(200).json({
+    message: "Product price updated",
+    data: myProduct,
+  });
+});
